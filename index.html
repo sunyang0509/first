@@ -1,11 +1,309 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=, initial-scale=1.0">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>단체여행자보험 가입</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .info-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .info-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-section li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .info-section li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .help-text {
+            font-size: 0.85em;
+            color: #777;
+            margin-top: 5px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+    </style>
 </head>
 <body>
- first
+    <div class="container">
+        <div class="header">
+            <h1>단체여행자보험 가입</h1>
+            <p>안전하고 즐거운 여행을 위한 보험 가입</p>
+        </div>
+
+        <div class="content">
+            <div class="info-section">
+                <h2>보장 내용</h2>
+                <ul>
+                    <li>여행 중 상해 및 질병으로 인한 의료비 보장</li>
+                    <li>항공기 지연 및 여행 취소 보상</li>
+                    <li>수하물 분실 및 손상 보상</li>
+                    <li>긴급 귀국 비용 지원</li>
+                    <li>24시간 긴급 지원 서비스</li>
+                </ul>
+            </div>
+
+            <h2 class="section-title">가입 정보 입력</h2>
+            
+            <form id="insuranceForm" onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label for="groupName">단체명 / 회사명 <span class="required">*</span></label>
+                    <input type="text" id="groupName" name="groupName" required placeholder="예: ABC 여행사">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="contactName">담당자 성명 <span class="required">*</span></label>
+                        <input type="text" id="contactName" name="contactName" required placeholder="홍길동">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactPhone">연락처 <span class="required">*</span></label>
+                        <input type="tel" id="contactPhone" name="contactPhone" required placeholder="010-1234-5678">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">이메일 <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" required placeholder="example@email.com">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="travelers">여행자 수 <span class="required">*</span></label>
+                        <input type="number" id="travelers" name="travelers" required min="2" placeholder="2명 이상">
+                        <div class="help-text">최소 2명 이상부터 가입 가능합니다</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="destination">여행지 <span class="required">*</span></label>
+                        <input type="text" id="destination" name="destination" required placeholder="예: 일본, 유럽, 동남아시아">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="departureDate">출발일 <span class="required">*</span></label>
+                        <input type="date" id="departureDate" name="departureDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="returnDate">귀국일 <span class="required">*</span></label>
+                        <input type="date" id="returnDate" name="returnDate" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="insuranceType">보험 종류 <span class="required">*</span></label>
+                    <select id="insuranceType" name="insuranceType" required>
+                        <option value="">선택해주세요</option>
+                        <option value="basic">기본형 (의료비 5천만원)</option>
+                        <option value="standard">표준형 (의료비 1억원)</option>
+                        <option value="premium">프리미엄형 (의료비 2억원)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="additionalInfo">추가 요청사항</label>
+                    <textarea id="additionalInfo" name="additionalInfo" placeholder="특별 요청사항이나 문의사항을 입력해주세요"></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">가입 신청하기</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 날짜 입력 필드에 오늘 날짜를 최소값으로 설정
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('departureDate').setAttribute('min', today);
+        document.getElementById('returnDate').setAttribute('min', today);
+
+        // 출발일 변경 시 귀국일 최소값 업데이트
+        document.getElementById('departureDate').addEventListener('change', function() {
+            const departureDate = this.value;
+            if (departureDate) {
+                document.getElementById('returnDate').setAttribute('min', departureDate);
+            }
+        });
+
+        // 폼 제출 처리
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData);
+            
+            // 간단한 유효성 검사
+            const departureDate = new Date(data.departureDate);
+            const returnDate = new Date(data.returnDate);
+            
+            if (returnDate <= departureDate) {
+                alert('귀국일은 출발일보다 늦어야 합니다.');
+                return;
+            }
+            
+            if (parseInt(data.travelers) < 2) {
+                alert('여행자 수는 최소 2명 이상이어야 합니다.');
+                return;
+            }
+            
+            // 실제 환경에서는 여기서 서버로 데이터를 전송합니다
+            alert('가입 신청이 완료되었습니다!\n\n담당자가 확인 후 연락드리겠습니다.');
+            
+            // 폼 초기화 (선택사항)
+            // event.target.reset();
+        }
+    </script>
 </body>
 </html>
