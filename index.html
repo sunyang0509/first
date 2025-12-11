@@ -172,6 +172,52 @@
             padding-bottom: 10px;
             border-bottom: 2px solid #f0f0f0;
         }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e74c3c;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        .success-message {
+            background: #efe;
+            color: #3c3;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #27ae60;
+            display: none;
+        }
+
+        .success-message.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -194,6 +240,10 @@
             </div>
 
             <h2 class="section-title">가입 정보 입력</h2>
+            
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+            <div id="loading" class="loading">처리 중입니다...</div>
             
             <form id="insuranceForm" onsubmit="handleSubmit(event)">
                 <div class="form-group">
@@ -277,32 +327,89 @@
             }
         });
 
+        // 메시지 표시 함수
+        function showMessage(type, message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            const loadingDiv = document.getElementById('loading');
+            
+            // 모든 메시지 숨기기
+            errorDiv.classList.remove('active');
+            successDiv.classList.remove('active');
+            loadingDiv.classList.remove('active');
+            
+            if (type === 'error') {
+                errorDiv.textContent = message;
+                errorDiv.classList.add('active');
+            } else if (type === 'success') {
+                successDiv.textContent = message;
+                successDiv.classList.add('active');
+            } else if (type === 'loading') {
+                loadingDiv.classList.add('active');
+            }
+        }
+
         // 폼 제출 처리
-        function handleSubmit(event) {
+        async function handleSubmit(event) {
             event.preventDefault();
             
             const formData = new FormData(event.target);
             const data = Object.fromEntries(formData);
             
-            // 간단한 유효성 검사
+            // 클라이언트 사이드 유효성 검사
             const departureDate = new Date(data.departureDate);
             const returnDate = new Date(data.returnDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (departureDate < today) {
+                showMessage('error', '출발일은 오늘 이후 날짜여야 합니다.');
+                return;
+            }
             
             if (returnDate <= departureDate) {
-                alert('귀국일은 출발일보다 늦어야 합니다.');
+                showMessage('error', '귀국일은 출발일보다 늦어야 합니다.');
                 return;
             }
             
             if (parseInt(data.travelers) < 2) {
-                alert('여행자 수는 최소 2명 이상이어야 합니다.');
+                showMessage('error', '여행자 수는 최소 2명 이상이어야 합니다.');
                 return;
             }
             
-            // 실제 환경에서는 여기서 서버로 데이터를 전송합니다
-            alert('가입 신청이 완료되었습니다!\n\n담당자가 확인 후 연락드리겠습니다.');
+            // 서버로 데이터 전송
+            const submitButton = event.target.querySelector('.submit-btn');
+            submitButton.disabled = true;
+            showMessage('loading', '');
             
-            // 폼 초기화 (선택사항)
-            // event.target.reset();
+            try {
+                const response = await fetch('api/apply.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('success', '가입 신청이 완료되었습니다!\\n\\n담당자가 확인 후 연락드리겠습니다.');
+                    // 폼 초기화
+                    event.target.reset();
+                    // 날짜 최소값 재설정
+                    document.getElementById('departureDate').setAttribute('min', new Date().toISOString().split('T')[0]);
+                    document.getElementById('returnDate').setAttribute('min', new Date().toISOString().split('T')[0]);
+                } else {
+                    const errorMsg = result.errors ? result.errors.join('\\n') : result.message;
+                    showMessage('error', '신청 처리 중 오류가 발생했습니다:\\n' + errorMsg);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('error', '서버와 통신하는 중 오류가 발생했습니다.\\n잠시 후 다시 시도해주세요.');
+            } finally {
+                submitButton.disabled = false;
+            }
         }
     </script>
 </body>
