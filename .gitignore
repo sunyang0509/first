@@ -1,0 +1,23 @@
+# 로그 파일 무시
+*.log
+
+# node_modules 폴더 무시
+node_modules/
+
+# 빌드 폴더 무시
+dist/
+build/
+
+# 환경변수 파일 무시
+.env
+
+# IDE 설정
+.vscode/
+.idea/
+
+# 시스템 파일
+.DS_Store
+Thumbs.db
+/config/config.php
+config.php
+database.sql
